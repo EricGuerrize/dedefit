@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { supabase } from './lib/supabase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './lib/firebase';
 import { useAuthStore } from './store/useAuthStore';
 import Layout from './components/Layout';
 import Login from './pages/Login';
@@ -10,22 +11,15 @@ import History from './pages/History';
 import Plans from './pages/Plans';
 
 function App() {
-  const { user, setAuth, setInitialized, initialized } = useAuthStore();
+  const { user, setUser, setInitialized, initialized } = useAuthStore();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setAuth(session?.user ?? null, session);
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
       setInitialized(true);
     });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setAuth(session?.user ?? null, session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, [setAuth, setInitialized]);
+    return () => unsubscribe();
+  }, [setUser, setInitialized]);
 
   if (!initialized) {
     return (
@@ -39,8 +33,6 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
-        
-        {/* Protected Routes */}
         <Route element={user ? <Layout /> : <Navigate to="/login" />}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/log" element={<WorkoutLog />} />

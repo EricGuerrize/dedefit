@@ -1,10 +1,5 @@
 import { create } from 'zustand';
-import { Database } from '../types/supabase';
-
-export type Workout = Database['public']['Tables']['workouts']['Row'];
-export type Exercise = Database['public']['Tables']['exercises']['Row'];
-export type CardioSession = Database['public']['Tables']['cardio_sessions']['Row'];
-export type TrainingPlan = Database['public']['Tables']['training_plans']['Row'];
+import type { Workout } from '../types/models';
 
 interface WorkoutState {
   workouts: Workout[];
