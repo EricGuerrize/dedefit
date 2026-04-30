@@ -99,61 +99,62 @@ export default function WorkoutLog() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 animate-in fade-in duration-500">
-      <header className="flex justify-between items-end">
+      <header className="ios-panel soft-reveal p-6 flex flex-col gap-5 md:flex-row md:justify-between md:items-end">
         <div>
-          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-500">
+          <p className="text-xs font-black uppercase tracking-[0.22em] text-primary">{status === 'completed' ? 'Execução' : 'Planejamento'}</p>
+          <h1 className="mt-2 text-3xl md:text-4xl font-black tracking-tight text-foreground">
             {status === 'completed' ? 'Registrar Treino' : 'Programar Treino'}
           </h1>
           <p className="text-muted-foreground">Mantenha o foco nos seus objetivos.</p>
         </div>
-        <div className="flex gap-2 bg-secondary/20 p-1 rounded-xl">
-          <button onClick={() => setStatus('completed')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${status === 'completed' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'}`}>Realizado</button>
-          <button onClick={() => setStatus('planned')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${status === 'planned' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'}`}>Planejar</button>
+        <div className="grid grid-cols-2 gap-1 rounded-[18px] bg-black/25 p-1 border border-white/10">
+          <button onClick={() => setStatus('completed')} className={`px-4 py-2.5 rounded-2xl text-sm font-bold transition-all ${status === 'completed' ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/25' : 'text-muted-foreground'}`}>Realizado</button>
+          <button onClick={() => setStatus('planned')} className={`px-4 py-2.5 rounded-2xl text-sm font-bold transition-all ${status === 'planned' ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/25' : 'text-muted-foreground'}`}>Planejar</button>
         </div>
       </header>
 
-      <div className="glass-card p-6 rounded-2xl">
+      <div className="ios-panel soft-reveal p-5 md:p-6" style={{ animationDelay: '80ms' }}>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="text-sm font-medium mb-1 block">Tipo</label>
-              <div className="flex gap-2 p-1 bg-background/50 rounded-lg">
-                <button type="button" onClick={() => setType('musculacao')} className={`flex-1 flex justify-center items-center gap-2 py-2 rounded-md transition-all ${type === 'musculacao' ? 'bg-primary text-primary-foreground shadow' : 'text-muted-foreground hover:bg-white/5'}`}><Dumbbell size={18} /> Musculação</button>
-                <button type="button" onClick={() => setType('corrida')} className={`flex-1 flex justify-center items-center gap-2 py-2 rounded-md transition-all ${type === 'corrida' ? 'bg-primary text-primary-foreground shadow' : 'text-muted-foreground hover:bg-white/5'}`}><Timer size={18} /> Corrida</button>
+              <label className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-2 block">Tipo</label>
+              <div className="grid grid-cols-2 gap-1 rounded-[18px] bg-black/25 p-1 border border-white/10">
+                <button type="button" onClick={() => setType('musculacao')} className={`flex justify-center items-center gap-2 py-3 rounded-2xl text-sm font-bold transition-all ${type === 'musculacao' ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/25' : 'text-muted-foreground hover:bg-white/5'}`}><Dumbbell size={18} /> Musculação</button>
+                <button type="button" onClick={() => setType('corrida')} className={`flex justify-center items-center gap-2 py-3 rounded-2xl text-sm font-bold transition-all ${type === 'corrida' ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/25' : 'text-muted-foreground hover:bg-white/5'}`}><Timer size={18} /> Corrida</button>
               </div>
             </div>
             <div>
-              <label className="text-sm font-medium mb-1 block">Data</label>
-              <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required className="w-full px-4 py-2 bg-background/50 border border-border rounded-lg focus:ring-2 focus:ring-primary/50 text-foreground" />
+              <label className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-2 block">Data</label>
+              <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required className="ios-control w-full" />
             </div>
           </div>
 
-          <div className="border-t border-border/50 pt-6">
+          <div className="border-t border-white/10 pt-6">
             {type === 'musculacao' ? (
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium mb-1 block">Grupo Muscular</label>
-                  <select value={muscleGroup} onChange={(e) => setMuscleGroup(e.target.value)} className="w-full px-4 py-2 bg-background/50 border border-border rounded-lg focus:ring-2 focus:ring-primary/50 text-foreground">
+                  <label className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-2 block">Grupo Muscular</label>
+                  <select value={muscleGroup} onChange={(e) => setMuscleGroup(e.target.value)} className="ios-control w-full">
                     {MUSCLE_GROUPS.map(g => <option key={g} value={g} className="bg-background">{g}</option>)}
                   </select>
                 </div>
 
                 {status === 'completed' && (
                   <div className="space-y-4 pt-4">
-                    <h3 className="font-semibold text-lg flex justify-between items-center text-foreground">
+                    <h3 className="font-black text-lg flex justify-between items-center text-foreground">
                       Exercícios
-                      <button type="button" onClick={handleAddExercise} className="text-sm bg-primary/10 text-primary px-3 py-1 rounded-md hover:bg-primary/20 flex items-center gap-1"><Plus size={16} /> Adicionar</button>
+                      <button type="button" onClick={handleAddExercise} className="text-sm bg-primary/15 text-primary px-3 py-2 rounded-2xl hover:bg-primary/20 flex items-center gap-1 font-bold"><Plus size={16} /> Adicionar</button>
                     </h3>
                     {exercises.map((ex: any, index: number) => (
-                      <div key={index} className="p-4 bg-background/30 rounded-xl border border-border/50 space-y-4">
+                      <div key={index} className="ios-tile soft-reveal p-4 space-y-4" style={{ animationDelay: `${index * 70}ms` }}>
                         <div className="flex justify-between items-center">
-                          <input type="text" placeholder="Nome do exercício" value={ex.name} required onChange={(e) => handleExerciseChange(index, 'name', e.target.value)} className="flex-1 bg-transparent border-b border-border/50 focus:border-primary outline-none py-1 mr-4 font-medium" />
-                          {exercises.length > 1 && <button type="button" onClick={() => handleRemoveExercise(index)} className="text-destructive p-1 hover:bg-destructive/10 rounded"><Trash2 size={18} /></button>}
+                          <input type="text" placeholder="Nome do exercício" value={ex.name} required onChange={(e) => handleExerciseChange(index, 'name', e.target.value)} className="flex-1 bg-transparent border-b border-white/10 focus:border-primary outline-none py-2 mr-4 font-bold text-lg placeholder:text-muted-foreground/60" />
+                          {exercises.length > 1 && <button type="button" onClick={() => handleRemoveExercise(index)} className="text-destructive p-2 hover:bg-destructive/10 rounded-2xl"><Trash2 size={18} /></button>}
                         </div>
-                        <div className="grid grid-cols-3 gap-4">
-                          <div><label className="text-[10px] text-muted-foreground uppercase font-bold">Séries</label><input type="number" min="0" value={ex.sets} required onChange={(e) => handleExerciseChange(index, 'sets', parseInt(e.target.value))} className="w-full px-3 py-2 bg-background/50 border border-border rounded-lg" /></div>
-                          <div><label className="text-[10px] text-muted-foreground uppercase font-bold">Reps</label><input type="number" min="0" value={ex.reps} required onChange={(e) => handleExerciseChange(index, 'reps', parseInt(e.target.value))} className="w-full px-3 py-2 bg-background/50 border border-border rounded-lg" /></div>
-                          <div><label className="text-[10px] text-muted-foreground uppercase font-bold">Peso (kg)</label><input type="number" step="0.5" min="0" value={ex.weight} required onChange={(e) => handleExerciseChange(index, 'weight', parseFloat(e.target.value))} className="w-full px-3 py-2 bg-background/50 border border-border rounded-lg" /></div>
+                        <div className="grid grid-cols-3 gap-3">
+                          <div><label className="text-[10px] text-muted-foreground uppercase font-black">Séries</label><input type="number" min="0" value={ex.sets} required onChange={(e) => handleExerciseChange(index, 'sets', parseInt(e.target.value))} className="ios-control mt-1 w-full px-3 text-xl font-black" /></div>
+                          <div><label className="text-[10px] text-muted-foreground uppercase font-black">Reps</label><input type="number" min="0" value={ex.reps} required onChange={(e) => handleExerciseChange(index, 'reps', parseInt(e.target.value))} className="ios-control mt-1 w-full px-3 text-xl font-black" /></div>
+                          <div><label className="text-[10px] text-muted-foreground uppercase font-black">Peso</label><input type="number" step="0.5" min="0" value={ex.weight} required onChange={(e) => handleExerciseChange(index, 'weight', parseFloat(e.target.value))} className="ios-control mt-1 w-full px-3 text-xl font-black" /></div>
                         </div>
                       </div>
                     ))}
@@ -163,21 +164,21 @@ export default function WorkoutLog() {
             ) : (
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium mb-1 block">Meta de Distância (km)</label>
-                  <input type="number" step="0.1" min="0" value={targetDistance} onChange={(e) => setTargetDistance(parseFloat(e.target.value))} className="w-full px-4 py-2 bg-background/50 border border-border rounded-lg focus:ring-2 focus:ring-primary/50" placeholder="Quanto pretende correr?" />
+                  <label className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-2 block">Meta de Distância (km)</label>
+                  <input type="number" step="0.1" min="0" value={targetDistance} onChange={(e) => setTargetDistance(parseFloat(e.target.value))} className="ios-control w-full" placeholder="Quanto pretende correr?" />
                 </div>
                 
                 {status === 'completed' && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-border/20">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-white/10">
                     <div>
-                      <label className="text-sm font-medium mb-1 block text-primary">Distância Percorrida (km)</label>
-                      <input type="number" step="0.01" min="0" value={distance} required onChange={(e) => setDistance(parseFloat(e.target.value))} className="w-full px-4 py-2 bg-background border border-primary/30 rounded-lg focus:ring-2 focus:ring-primary/50" />
+                      <label className="text-xs font-black uppercase tracking-widest text-primary mb-2 block">Distância Percorrida</label>
+                      <input type="number" step="0.01" min="0" value={distance} required onChange={(e) => setDistance(parseFloat(e.target.value))} className="ios-control w-full" />
                     </div>
                     <div>
-                      <label className="text-sm font-medium mb-1 block">Tempo Total (hh:mm:ss)</label>
-                      <input type="text" pattern="[0-9]{1,2}:[0-9]{2}:[0-9]{2}" placeholder="00:30:00" value={durationStr} required onChange={(e) => setDurationStr(e.target.value)} className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary/50" />
+                      <label className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-2 block">Tempo Total</label>
+                      <input type="text" pattern="[0-9]{1,2}:[0-9]{2}:[0-9]{2}" placeholder="00:30:00" value={durationStr} required onChange={(e) => setDurationStr(e.target.value)} className="ios-control w-full" />
                     </div>
-                    <div className="md:col-span-2 bg-primary/5 p-4 rounded-xl flex justify-between items-center border border-primary/20">
+                    <div className="md:col-span-2 bg-primary/10 p-4 rounded-[22px] flex justify-between items-center border border-primary/20">
                       <span className="font-medium text-foreground">Pace Realizado:</span>
                       <span className="text-2xl font-bold text-primary">{calculatePace(distance, durationStr)}</span>
                     </div>
@@ -187,12 +188,12 @@ export default function WorkoutLog() {
             )}
           </div>
 
-          <div className="border-t border-border/50 pt-6">
-            <label className="text-sm font-medium mb-1 block">Notas ou Observações</label>
-            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} className="w-full px-4 py-2 bg-background/50 border border-border rounded-lg focus:ring-2 focus:ring-primary/50 resize-none" placeholder={status === 'planned' ? 'O que pretende focar nesse treino?' : 'Como se sentiu?'}></textarea>
+          <div className="border-t border-white/10 pt-6">
+            <label className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-2 block">Notas</label>
+            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} className="ios-control w-full resize-none" placeholder={status === 'planned' ? 'O que pretende focar nesse treino?' : 'Como se sentiu?'}></textarea>
           </div>
 
-          <button type="submit" disabled={loading} className={`w-full font-bold py-4 px-4 rounded-xl transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 ${status === 'completed' ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20' : 'bg-secondary text-secondary-foreground border border-border'}`}>
+          <button type="submit" disabled={loading} className={`soft-reveal w-full py-4 px-4 flex items-center justify-center gap-2 ${status === 'completed' ? 'ios-button' : 'ios-button-muted'}`} style={{ animationDelay: '140ms' }}>
             {loading ? 'Processando...' : status === 'completed' ? <><Plus size={20} /> Salvar Treino Realizado</> : <><Calendar size={20} /> Agendar Treino</>}
           </button>
         </form>

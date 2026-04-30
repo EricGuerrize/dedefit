@@ -27,6 +27,11 @@ export interface CardioSession {
   durationSeconds: number;
   pace: string;
   targetPace?: string; // Pace programado
+  elevationGain?: number;
+  avgHeartRate?: number;
+  calories?: number;
+  perceivedEffort?: number;
+  terrain?: string;
   notes?: string;
 }
 

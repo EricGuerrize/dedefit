@@ -4,35 +4,35 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 240 13% 5%;
+    --foreground: 0 0% 96%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 236 15% 12%;
+    --card-foreground: 0 0% 96%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 236 15% 12%;
+    --popover-foreground: 0 0% 96%;
 
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 349 76% 58%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 239 12% 20%;
+    --secondary-foreground: 0 0% 94%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 239 11% 18%;
+    --muted-foreground: 240 7% 66%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 163 62% 76%;
+    --accent-foreground: 240 13% 5%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 70% 54%;
+    --destructive-foreground: 24 28% 96%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --border: 240 10% 25%;
+    --input: 239 12% 17%;
+    --ring: 349 76% 58%;
 
-    --radius: 0.75rem;
+    --radius: 1.375rem;
   }
 
   .dark {
@@ -72,42 +72,140 @@
   }
   body {
     @apply bg-background text-foreground antialiased selection:bg-primary/30;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+    background:
+      radial-gradient(circle at 50% -10%, hsl(var(--primary) / 0.18), transparent 24rem),
+      radial-gradient(circle at 85% 20%, hsl(var(--accent) / 0.08), transparent 22rem),
+      linear-gradient(180deg, hsl(240 14% 7%), hsl(240 13% 5%) 42%, hsl(240 12% 4%));
+    min-height: 100vh;
+  }
+
+  input,
+  select,
+  textarea {
+    @apply outline-none transition-all;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    @apply ring-2 ring-primary/35 border-primary/40;
   }
 }
 
 /* Glassmorphism utilities */
 @layer components {
   .glass {
-    @apply bg-black/40 backdrop-blur-md border border-white/10;
+    @apply bg-card/75 backdrop-blur-2xl border border-white/10 shadow-2xl shadow-black/40;
   }
   
   .glass-card {
-    @apply bg-[#1a1a1a] border border-white/5 shadow-xl;
+    @apply bg-card/80 backdrop-blur-2xl border border-white/10 shadow-2xl shadow-black/35;
+  }
+
+  .ios-panel {
+    @apply rounded-[28px] bg-card/80 backdrop-blur-2xl border border-white/10 shadow-2xl shadow-black/40 transition-all duration-300;
+  }
+
+  .ios-tile {
+    @apply rounded-[22px] bg-white/[0.055] border border-white/[0.08] shadow-lg shadow-black/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/[0.075] hover:shadow-primary/10;
+  }
+
+  .ios-control {
+    @apply rounded-2xl bg-input/80 border border-white/10 px-4 py-3 text-foreground placeholder:text-muted-foreground/55;
+  }
+
+  .ios-button {
+    @apply rounded-2xl bg-primary text-primary-foreground font-bold shadow-xl shadow-primary/25 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-primary/40 active:scale-[0.98] disabled:opacity-50;
+  }
+
+  .ios-button-muted {
+    @apply rounded-2xl bg-white/[0.08] text-foreground font-bold border border-white/10 transition-all duration-300 hover:bg-white/[0.12] active:scale-[0.98];
+  }
+
+  .soft-reveal {
+    animation: soft-reveal 520ms ease both;
+  }
+
+  .float-slow {
+    animation: float-slow 5s ease-in-out infinite;
+  }
+
+  .pulse-glow {
+    animation: pulse-glow 2.8s ease-in-out infinite;
+  }
+
+  .shimmer-line {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shimmer-line::after {
+    animation: shimmer-line 2.4s ease-in-out infinite;
+    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.55), transparent);
+    content: '';
+    inset: 0;
+    position: absolute;
+    transform: translateX(-100%);
   }
 
   /* Timeline Styles */
   .timeline-container {
-    @apply relative pl-8 space-y-6;
+    @apply relative pl-8 space-y-4;
   }
 
   .timeline-line {
-    @apply absolute left-[11px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-orange-500 to-orange-500/20;
+    @apply absolute left-[11px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-primary to-primary/10;
   }
 
   .timeline-dot {
-    @apply absolute left-0 w-6 h-6 rounded-full border-4 border-[#1a1a1a] bg-orange-500 z-10;
+    @apply absolute left-0 w-6 h-6 rounded-full border-4 border-card bg-primary z-10;
   }
 
   .timeline-dot.completed {
-    @apply bg-green-500 border-green-500/20;
+    @apply bg-emerald-500 border-emerald-500/20;
   }
 
   .timeline-dot.pending {
-    @apply bg-zinc-700 border-zinc-800;
+    @apply bg-muted border-background;
   }
 
   .step-card {
-    @apply bg-[#242424] p-4 rounded-2xl border border-white/5 transition-all hover:bg-[#2a2a2a];
+    @apply bg-white/[0.055] p-4 rounded-[22px] border border-white/[0.08] transition-all hover:bg-white/[0.08];
+  }
+}
+
+@keyframes soft-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 18px 42px hsl(var(--primary) / 0.18);
+  }
+  50% {
+    box-shadow: 0 22px 64px hsl(var(--primary) / 0.34);
+  }
+}
+
+@keyframes shimmer-line {
+  to {
+    transform: translateX(100%);
   }
 }

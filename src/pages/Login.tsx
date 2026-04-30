@@ -39,49 +39,49 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background relative overflow-hidden">
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse"></div>
-      <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-secondary/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse" style={{ animationDelay: '2s' }}></div>
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent"></div>
+      <div className="absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-primary/15 blur-3xl float-slow"></div>
 
       <div className="w-full max-w-md z-10">
-        <div className="glass-card rounded-2xl p-8 space-y-8 animate-in fade-in zoom-in duration-500">
+        <div className="ios-panel soft-reveal p-8 space-y-8 animate-in fade-in zoom-in duration-500">
           <div className="text-center">
-            <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-              <Dumbbell className="w-8 h-8 text-primary" />
+            <div className="mx-auto w-16 h-16 bg-primary rounded-[22px] flex items-center justify-center mb-4 border border-white/10 shadow-xl shadow-primary/25 pulse-glow">
+              <Dumbbell className="w-8 h-8 text-primary-foreground" />
             </div>
-            <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-500">DedeFit</h2>
+            <h2 className="text-3xl font-black tracking-tight text-foreground">Dede<span className="text-primary">Fit</span></h2>
             <p className="text-muted-foreground mt-2">{isLogin ? 'Bem-vindo de volta!' : 'Crie sua conta para começar'}</p>
           </div>
 
           <form onSubmit={handleAuth} className="space-y-6">
             {error && (
-              <div className={`p-3 rounded-lg text-sm ${error.includes('Conta criada') ? 'bg-green-500/10 text-green-500' : 'bg-destructive/10 text-destructive'}`}>
+              <div className={`soft-reveal p-3 rounded-lg text-sm ${error.includes('Conta criada') ? 'bg-emerald-500/10 text-emerald-400' : 'bg-destructive/10 text-destructive'}`}>
                 {error}
               </div>
             )}
             <div className="space-y-4">
               {!isLogin && (
                 <div className="animate-in slide-in-from-top-2 duration-300">
-                  <label className="text-sm font-medium text-foreground mb-1 block">Nome Completo</label>
+                  <label className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-2 block">Nome Completo</label>
                   <input type="text" required value={name} onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-3 bg-background/50 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-foreground placeholder:text-muted-foreground/50"
+                    className="ios-control w-full"
                     placeholder="Como podemos te chamar?" />
                 </div>
               )}
               <div>
-                <label className="text-sm font-medium text-foreground mb-1 block">Email</label>
+                <label className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-2 block">Email</label>
                 <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 bg-background/50 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-foreground placeholder:text-muted-foreground/50"
+                  className="ios-control w-full"
                   placeholder="seu@email.com" />
               </div>
               <div>
-                <label className="text-sm font-medium text-foreground mb-1 block">Senha</label>
+                <label className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-2 block">Senha</label>
                 <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-background/50 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-foreground placeholder:text-muted-foreground/50"
+                  className="ios-control w-full"
                   placeholder="••••••••" />
               </div>
             </div>
             <button type="submit" disabled={loading}
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-4 rounded-lg transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none">
+              className="ios-button w-full py-4 px-4 disabled:pointer-events-none">
               {loading ? 'Aguarde...' : isLogin ? 'Entrar' : 'Criar conta'}
             </button>
           </form>

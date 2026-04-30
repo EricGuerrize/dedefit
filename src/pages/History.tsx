@@ -52,13 +52,14 @@ export default function History() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <header className="ios-panel soft-reveal p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-500">Histórico</h1>
+          <p className="text-xs font-black uppercase tracking-[0.22em] text-primary">Arquivo</p>
+          <h1 className="mt-2 text-3xl md:text-4xl font-black tracking-tight text-foreground">Histórico</h1>
           <p className="text-muted-foreground">Todos os seus registros e planos.</p>
         </div>
         
-        <div className="flex items-center gap-2 glass-card px-4 py-2 rounded-lg w-fit">
+        <div className="flex items-center gap-2 ios-tile soft-reveal px-4 py-3 w-fit" style={{ animationDelay: '70ms' }}>
           <Filter size={16} className="text-muted-foreground" />
           <select value={filterType} onChange={(e) => setFilterType(e.target.value)} className="bg-transparent border-none focus:outline-none text-sm font-medium text-foreground">
             <option value="all" className="bg-background">Todos</option>
@@ -71,15 +72,15 @@ export default function History() {
       {loading ? (
         <div className="flex justify-center p-8"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>
       ) : filteredWorkouts.length === 0 ? (
-        <div className="text-center p-8 glass-card rounded-2xl text-muted-foreground">Nenhuma atividade encontrada.</div>
+        <div className="text-center p-8 ios-panel soft-reveal text-muted-foreground">Nenhuma atividade encontrada.</div>
       ) : (
         <div className="space-y-4">
-          {filteredWorkouts.map(workout => (
-            <div key={workout.id} className={`glass-card p-5 rounded-2xl border-l-4 transition-all ${workout.status === 'planned' ? 'border-secondary' : 'border-primary'}`}>
+          {filteredWorkouts.map((workout, index) => (
+            <div key={workout.id} className={`ios-panel soft-reveal p-5 border-l-4 transition-all ${workout.status === 'planned' ? 'border-secondary' : 'border-primary'}`} style={{ animationDelay: `${index * 65}ms` }}>
               <div className="flex flex-col md:flex-row justify-between gap-4">
                 <div className="flex-1 space-y-2">
                   <div className="flex items-center gap-2">
-                    <span className={`px-2 py-0.5 text-[10px] uppercase font-bold rounded-md ${workout.status === 'planned' ? 'bg-secondary/20 text-secondary-foreground' : 'bg-primary/20 text-primary'}`}>
+                    <span className={`px-2.5 py-1 text-[10px] uppercase font-black rounded-full ${workout.status === 'planned' ? 'bg-secondary/40 text-secondary-foreground' : 'bg-primary/20 text-primary'}`}>
                       {workout.status === 'planned' ? 'Programado' : 'Realizado'}
                     </span>
                     <span className="text-sm font-bold text-foreground">
@@ -103,7 +104,7 @@ export default function History() {
                       ))}
                     </div>
                   ) : (
-                    <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 bg-secondary/5 p-3 rounded-xl border border-border/10">
+                    <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 bg-white/[0.045] p-3 rounded-[20px] border border-white/10">
                       <div>
                         <p className="text-[10px] text-muted-foreground uppercase font-bold">Distância</p>
                         <p className="font-bold text-foreground">{workout.cardioSessions?.[0]?.distance || 0} km</p>
@@ -127,10 +128,10 @@ export default function History() {
                 </div>
                 
                 <div className="flex md:flex-col justify-end items-center gap-2 pt-4 md:pt-0 border-t md:border-t-0 md:border-l border-border/10 md:pl-4">
-                  <button onClick={() => navigate('/log', { state: { workout } })} className="p-2 text-muted-foreground hover:bg-primary/10 hover:text-primary rounded-lg transition-colors">
+                  <button onClick={() => navigate('/log', { state: { workout } })} className="p-2 text-muted-foreground hover:bg-primary/10 hover:text-primary rounded-2xl transition-colors">
                     <Edit3 size={20} />
                   </button>
-                  <button onClick={() => handleDelete(workout.id)} className="p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive rounded-lg transition-colors">
+                  <button onClick={() => handleDelete(workout.id)} className="p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive rounded-2xl transition-colors">
                     <Trash2 size={20} />
                   </button>
                 </div>

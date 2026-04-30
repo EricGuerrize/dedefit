@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import WorkoutLog from './pages/WorkoutLog';
 import History from './pages/History';
 import Plans from './pages/Plans';
+import RunLog from './pages/RunLog';
 
 function App() {
   const { user, setUser, setInitialized, initialized } = useAuthStore();
@@ -40,6 +41,7 @@ function App() {
         <Route element={user ? <Layout /> : <Navigate to="/login" />}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/log" element={<WorkoutLog />} />
+          <Route path="/run" element={<RunLog />} />
           <Route path="/history" element={<History />} />
           <Route path="/plans" element={<Plans />} />
         </Route>

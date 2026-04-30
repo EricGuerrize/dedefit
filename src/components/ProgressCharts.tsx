@@ -54,10 +54,10 @@ export default function ProgressCharts() {
   if (volumeData.length === 0) return null;
 
   return (
-    <div className="space-y-8 mt-8 border-t border-border/50 pt-8">
-      <h2 className="text-xl font-bold">Progresso (Musculação)</h2>
+    <div className="space-y-8 mt-8 border-t border-white/10 pt-8">
+      <h2 className="text-xl font-black tracking-tight">Progresso (Musculação)</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="glass-card p-4 rounded-2xl hover:border-primary/30 transition-colors">
+        <div className="ios-panel soft-reveal p-4 hover:border-primary/30 transition-colors">
           <h3 className="font-medium text-muted-foreground mb-4 text-sm">Evolução de Carga Máxima (kg/dia)</h3>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -65,13 +65,13 @@ export default function ProgressCharts() {
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(150,150,150,0.1)" vertical={false} />
                 <XAxis dataKey="date" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
                 <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}kg`} />
-                <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '8px', color: 'hsl(var(--foreground))' }} />
+                <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '18px', color: 'hsl(var(--foreground))' }} />
                 <Line type="monotone" dataKey="maxWeight" name="Carga Máx." stroke="hsl(var(--primary))" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
-        <div className="glass-card p-4 rounded-2xl hover:border-primary/30 transition-colors">
+        <div className="ios-panel soft-reveal p-4 hover:border-primary/30 transition-colors" style={{ animationDelay: '90ms' }}>
           <h3 className="font-medium text-muted-foreground mb-4 text-sm">Volume Total Diário (kg)</h3>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -79,8 +79,8 @@ export default function ProgressCharts() {
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(150,150,150,0.1)" vertical={false} />
                 <XAxis dataKey="date" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
                 <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '8px', color: 'hsl(var(--foreground))' }} cursor={{ fill: 'rgba(150,150,150,0.05)' }} />
-                <Bar dataKey="volume" name="Volume" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '18px', color: 'hsl(var(--foreground))' }} cursor={{ fill: 'rgba(150,150,150,0.05)' }} />
+                <Bar dataKey="volume" name="Volume" fill="hsl(var(--primary))" radius={[10, 10, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
