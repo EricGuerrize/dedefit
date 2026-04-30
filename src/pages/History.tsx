@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { collection, query, where, orderBy, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuthStore } from '../store/useAuthStore';
-import { Filter, Trash2, Calendar, CheckCircle2 } from 'lucide-react';
+import { Filter, Trash2 } from 'lucide-react';
 import type { Workout } from '../types/models';
 
 export default function History() {

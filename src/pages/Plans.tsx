@@ -4,7 +4,7 @@ import { db } from '../lib/firebase';
 import { useAuthStore } from '../store/useAuthStore';
 import { Dumbbell, Plus, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { TrainingPlan } from '../types/models';
+import type { TrainingPlan } from '../types/models';
 
 const DEFAULT_PLANS = [
   { name: 'Push (Peito/Ombro/Tríceps)', description: 'Focado em movimentos de empurrar.', type: 'push', muscleGroup: 'Peito' },
