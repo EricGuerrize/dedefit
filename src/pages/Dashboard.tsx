@@ -5,6 +5,7 @@ import { useAuthStore } from '../store/useAuthStore';
 import { Activity, TrendingUp, Calendar, ArrowRight, Plus, CheckCircle2, Clock, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ProgressCharts from '../components/ProgressCharts';
+import MuscleHeatmap from '../components/MuscleHeatmap';
 import type { Workout } from '../types/models';
 
 export default function Dashboard() {
@@ -15,7 +16,8 @@ export default function Dashboard() {
     plannedWorkouts: [] as Workout[],
     totalVolume: 0,
     totalDistance: 0,
-    workoutsThisWeek: 0
+    workoutsThisWeek: 0,
+    muscleStats: {} as Record<string, number>
   });
 
   useEffect(() => {
@@ -47,16 +49,27 @@ export default function Dashboard() {
       let volume = 0;
       let distance = 0;
       let thisWeek = 0;
+      const mStats: Record<string, number> = {};
 
       allWorkouts.forEach(w => {
         if (w.status === 'completed' && w.workoutDate >= weekStartStr) {
           thisWeek++;
+          if (w.muscleGroup) {
+            mStats[w.muscleGroup] = (mStats[w.muscleGroup] || 0) + 1;
+          }
           w.exercises?.forEach(e => { volume += (e.sets || 0) * (e.reps || 0) * (e.weight || 0); });
           w.cardioSessions?.forEach(c => { distance += c.distance || 0; });
         }
       });
 
-      setStats({ recentWorkouts: recent, plannedWorkouts: planned, totalVolume: volume, totalDistance: distance, workoutsThisWeek: thisWeek });
+      setStats({ 
+        recentWorkouts: recent, 
+        plannedWorkouts: planned, 
+        totalVolume: volume, 
+        totalDistance: distance, 
+        workoutsThisWeek: thisWeek,
+        muscleStats: mStats
+      });
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     } finally {
@@ -74,8 +87,8 @@ export default function Dashboard() {
     <div className="space-y-8 pb-12">
       <header className="flex justify-between items-start">
         <div>
-          <h1 className="text-4xl font-extrabold tracking-tight text-white">Meu Plano</h1>
-          <p className="text-muted-foreground mt-1 text-lg">Semana 1 🔥</p>
+          <h1 className="text-4xl font-extrabold tracking-tight text-white">Olá, {user?.displayName?.split(' ')[0] || 'Guerreiro'}</h1>
+          <p className="text-muted-foreground mt-1 text-lg">Pronto para o treino de hoje? 🔥</p>
         </div>
         <div className="bg-orange-500/10 p-3 rounded-2xl text-orange-500 border border-orange-500/20">
           <TrendingUp size={24} />
@@ -180,6 +193,8 @@ export default function Dashboard() {
                {[4,7,5,8,6,9,7].map((h, i) => <div key={i} className="flex-1 bg-orange-500/40 rounded-t-sm" style={{ height: `${h*10}%` }}></div>)}
             </div>
           </div>
+
+          <MuscleHeatmap stats={stats.muscleStats} />
         </div>
       </div>
 
