@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuthStore } from '../store/useAuthStore';
-import { Activity, TrendingUp, Calendar, ArrowRight, Plus, CheckCircle2, Clock, Check } from 'lucide-react';
+import { Activity, TrendingUp, Calendar, ArrowRight, Plus, CheckCircle2, Clock, Check, Dumbbell } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ProgressCharts from '../components/ProgressCharts';
 import MuscleHeatmap from '../components/MuscleHeatmap';

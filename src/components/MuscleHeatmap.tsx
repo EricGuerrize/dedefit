@@ -5,16 +5,6 @@ interface MuscleHeatmapProps {
 }
 
 export default function MuscleHeatmap({ stats }: MuscleHeatmapProps) {
-  const muscles = [
-    { id: 'Peito', label: 'Peito', pos: 'top-[22%] left-[35%] w-[30%]' },
-    { id: 'Costas', label: 'Costas', pos: 'top-[20%] left-[35%] w-[30%]' },
-    { id: 'Ombros', label: 'Ombros', pos: 'top-[18%] left-[20%] w-[60%]' },
-    { id: 'Pernas', label: 'Pernas', pos: 'top-[50%] left-[25%] w-[50%]' },
-    { id: 'Bíceps', label: 'Bíceps', pos: 'top-[25%] left-[15%] w-[15%]' },
-    { id: 'Tríceps', label: 'Tríceps', pos: 'top-[25%] right-[15%] w-[15%]' },
-    { id: 'Abdômen', label: 'Core', pos: 'top-[35%] left-[40%] w-[20%]' },
-  ];
-
   const getColor = (count: number) => {
     if (!count) return 'bg-zinc-800';
     if (count < 2) return 'bg-blue-500/40';

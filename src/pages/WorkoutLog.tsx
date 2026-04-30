@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuthStore } from '../store/useAuthStore';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Dumbbell, Timer, Plus, Trash2, Calendar, Edit3 } from 'lucide-react';
+import { Dumbbell, Timer, Plus, Trash2, Calendar } from 'lucide-react';
 import { doc, setDoc, collection, addDoc } from 'firebase/firestore';
 
 const MUSCLE_GROUPS = [
@@ -39,7 +38,7 @@ export default function WorkoutLog() {
   });
 
   const handleAddExercise = () => setExercises([...exercises, { name: '', sets: 0, reps: 0, weight: 0, notes: '' }]);
-  const handleRemoveExercise = (index: number) => setExercises(exercises.filter((_, i) => i !== index));
+  const handleRemoveExercise = (index: number) => setExercises(exercises.filter((_: any, i: number) => i !== index));
   const handleExerciseChange = (index: number, field: string, value: any) => {
     const updated = [...exercises];
     updated[index] = { ...updated[index], [field]: value };
@@ -145,7 +144,7 @@ export default function WorkoutLog() {
                       Exercícios
                       <button type="button" onClick={handleAddExercise} className="text-sm bg-primary/10 text-primary px-3 py-1 rounded-md hover:bg-primary/20 flex items-center gap-1"><Plus size={16} /> Adicionar</button>
                     </h3>
-                    {exercises.map((ex, index) => (
+                    {exercises.map((ex: any, index: number) => (
                       <div key={index} className="p-4 bg-background/30 rounded-xl border border-border/50 space-y-4">
                         <div className="flex justify-between items-center">
                           <input type="text" placeholder="Nome do exercício" value={ex.name} required onChange={(e) => handleExerciseChange(index, 'name', e.target.value)} className="flex-1 bg-transparent border-b border-border/50 focus:border-primary outline-none py-1 mr-4 font-medium" />
