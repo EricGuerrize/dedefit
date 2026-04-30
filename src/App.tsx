@@ -14,6 +14,10 @@ function App() {
   const { user, setUser, setInitialized, initialized } = useAuthStore();
 
   useEffect(() => {
+    if (!auth) {
+      setInitialized(true);
+      return;
+    }
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
       setInitialized(true);

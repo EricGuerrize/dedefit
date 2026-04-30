@@ -3,15 +3,16 @@ export interface Workout {
   userId: string;
   workoutDate: string; // ISO date string YYYY-MM-DD
   type: 'musculacao' | 'corrida';
+  muscleGroup?: string; // Ex: Peito, Costas, Pernas
   notes?: string;
   exercises?: Exercise[];
   cardioSessions?: CardioSession[];
   createdAt: string;
+  status: 'planned' | 'completed'; // Adicionado para suportar programação
 }
 
 export interface Exercise {
   id?: string;
-  workoutId?: string;
   name: string;
   sets: number;
   reps: number;
@@ -21,10 +22,11 @@ export interface Exercise {
 
 export interface CardioSession {
   id?: string;
-  workoutId?: string;
   distance: number;
+  targetDistance?: number; // Meta programada
   durationSeconds: number;
   pace: string;
+  targetPace?: string; // Pace programado
   notes?: string;
 }
 
@@ -34,5 +36,6 @@ export interface TrainingPlan {
   name: string;
   description: string;
   type: string;
+  muscleGroup?: string;
   createdAt: string;
 }
