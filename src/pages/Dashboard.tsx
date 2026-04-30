@@ -176,11 +176,16 @@ export default function Dashboard() {
             
             {/* Exemplo de etapa concluída para efeito visual se o histórico tiver treinos de hoje */}
             {stats.recentWorkouts.length > 0 && stats.recentWorkouts[0].workoutDate === new Date().toISOString().split('T')[0] && (
-              <div className="relative">
-                <div className="timeline-dot completed flex items-center justify-center text-white"><Check size={12} /></div>
-                <div className="step-card opacity-60">
-                   <p className="text-xs font-bold text-emerald-500 uppercase mb-1">Hoje</p>
-                   <h4 className="text-lg font-bold text-foreground">Treino Finalizado</h4>
+              <div className="relative soft-reveal" style={{ animationDelay: '210ms' }}>
+                <div className="timeline-dot completed flex items-center justify-center text-white">
+                  <Check size={12} />
+                </div>
+                <div className="step-card ml-0 min-h-[112px] opacity-90">
+                  <div className="flex min-h-[80px] flex-col justify-center">
+                    <p className="text-xs font-bold text-emerald-500 uppercase tracking-wider mb-2">Hoje</p>
+                    <h4 className="text-xl font-bold text-foreground">Treino Finalizado</h4>
+                    <p className="mt-2 text-sm text-muted-foreground">Sessao concluida e registrada no historico.</p>
+                  </div>
                 </div>
               </div>
             )}
