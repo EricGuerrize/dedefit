@@ -21,6 +21,7 @@ export default function ProgressCharts() {
         collection(db, 'workouts'),
         where('userId', '==', user!.uid),
         where('type', '==', 'musculacao'),
+        where('status', '==', 'completed'),
         orderBy('workoutDate', 'asc'),
         limit(30)
       );
