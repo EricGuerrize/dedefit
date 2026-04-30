@@ -77,11 +77,37 @@
 }
 
 /* Glassmorphism utilities */
-@layer utilities {
+@layer components {
   .glass {
-    @apply bg-white/70 backdrop-blur-md border border-white/20 dark:bg-black/50 dark:border-white/10;
+    @apply bg-black/40 backdrop-blur-md border border-white/10;
   }
+  
   .glass-card {
-    @apply bg-card/80 backdrop-blur-md border border-border/50 shadow-sm;
+    @apply bg-[#1a1a1a] border border-white/5 shadow-xl;
+  }
+
+  /* Timeline Styles */
+  .timeline-container {
+    @apply relative pl-8 space-y-6;
+  }
+
+  .timeline-line {
+    @apply absolute left-[11px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-orange-500 to-orange-500/20;
+  }
+
+  .timeline-dot {
+    @apply absolute left-0 w-6 h-6 rounded-full border-4 border-[#1a1a1a] bg-orange-500 z-10;
+  }
+
+  .timeline-dot.completed {
+    @apply bg-green-500 border-green-500/20;
+  }
+
+  .timeline-dot.pending {
+    @apply bg-zinc-700 border-zinc-800;
+  }
+
+  .step-card {
+    @apply bg-[#242424] p-4 rounded-2xl border border-white/5 transition-all hover:bg-[#2a2a2a];
   }
 }

@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 import { collection, query, where, orderBy, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuthStore } from '../store/useAuthStore';
-import { Filter, Trash2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Filter, Trash2, Edit3 } from 'lucide-react';
 import type { Workout } from '../types/models';
 
 export default function History() {
   const { user } = useAuthStore();
+  const navigate = useNavigate();
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState('all');
@@ -125,6 +127,9 @@ export default function History() {
                 </div>
                 
                 <div className="flex md:flex-col justify-end items-center gap-2 pt-4 md:pt-0 border-t md:border-t-0 md:border-l border-border/10 md:pl-4">
+                  <button onClick={() => navigate('/log', { state: { workout } })} className="p-2 text-muted-foreground hover:bg-primary/10 hover:text-primary rounded-lg transition-colors">
+                    <Edit3 size={20} />
+                  </button>
                   <button onClick={() => handleDelete(workout.id)} className="p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive rounded-lg transition-colors">
                     <Trash2 size={20} />
                   </button>

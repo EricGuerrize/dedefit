@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuthStore } from '../store/useAuthStore';
-import { useNavigate } from 'react-router-dom';
-import { Dumbbell, Timer, Plus, Trash2, Calendar } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Dumbbell, Timer, Plus, Trash2, Calendar, Edit3 } from 'lucide-react';
+import { doc, setDoc, collection, addDoc } from 'firebase/firestore';
 
 const MUSCLE_GROUPS = [
   'Peito', 'Costas', 'Pernas', 'Ombros', 'Bíceps', 'Tríceps', 'Abdômen', 'Full Body'
@@ -12,20 +13,30 @@ const MUSCLE_GROUPS = [
 export default function WorkoutLog() {
   const { user } = useAuthStore();
   const navigate = useNavigate();
-  const [status, setStatus] = useState<'planned' | 'completed'>('completed');
-  const [type, setType] = useState<'musculacao' | 'corrida'>('musculacao');
-  const [muscleGroup, setMuscleGroup] = useState(MUSCLE_GROUPS[0]);
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-  const [notes, setNotes] = useState('');
+  const location = useLocation();
+  const editData = location.state?.workout;
+
+  const [status, setStatus] = useState<'planned' | 'completed'>(editData?.status || 'completed');
+  const [type, setType] = useState<'musculacao' | 'corrida'>(editData?.type || 'musculacao');
+  const [muscleGroup, setMuscleGroup] = useState(editData?.muscleGroup || MUSCLE_GROUPS[0]);
+  const [date, setDate] = useState(editData?.workoutDate || new Date().toISOString().split('T')[0]);
+  const [notes, setNotes] = useState(editData?.notes || '');
   const [loading, setLoading] = useState(false);
   
   // Musculação
-  const [exercises, setExercises] = useState([{ name: '', sets: 0, reps: 0, weight: 0, notes: '' }]);
+  const [exercises, setExercises] = useState(editData?.exercises || [{ name: '', sets: 0, reps: 0, weight: 0, notes: '' }]);
   
   // Corrida
-  const [distance, setDistance] = useState(0);
-  const [targetDistance, setTargetDistance] = useState(0);
-  const [durationStr, setDurationStr] = useState('00:00:00');
+  const [distance, setDistance] = useState(editData?.cardioSessions?.[0]?.distance || 0);
+  const [targetDistance, setTargetDistance] = useState(editData?.cardioSessions?.[0]?.targetDistance || 0);
+  const [durationStr, setDurationStr] = useState(() => {
+    if (!editData?.cardioSessions?.[0]?.durationSeconds) return '00:00:00';
+    const s = editData.cardioSessions[0].durationSeconds;
+    const h = Math.floor(s / 3600).toString().padStart(2, '0');
+    const m = Math.floor((s % 3600) / 60).toString().padStart(2, '0');
+    const sec = (s % 60).toString().padStart(2, '0');
+    return `${h}:${m}:${sec}`;
+  });
 
   const handleAddExercise = () => setExercises([...exercises, { name: '', sets: 0, reps: 0, weight: 0, notes: '' }]);
   const handleRemoveExercise = (index: number) => setExercises(exercises.filter((_, i) => i !== index));
@@ -73,7 +84,11 @@ export default function WorkoutLog() {
         }];
       }
 
-      await addDoc(collection(db, 'workouts'), workoutData);
+      if (editData?.id) {
+        await setDoc(doc(db, 'workouts', editData.id), workoutData);
+      } else {
+        await addDoc(collection(db, 'workouts'), workoutData);
+      }
       navigate('/');
     } catch (error) {
       console.error('Error saving workout:', error);

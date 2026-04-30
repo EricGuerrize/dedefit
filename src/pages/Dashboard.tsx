@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuthStore } from '../store/useAuthStore';
-import { Activity, TrendingUp, Calendar, ArrowRight, Plus, CheckCircle2, Clock } from 'lucide-react';
+import { Activity, TrendingUp, Calendar, ArrowRight, Plus, CheckCircle2, Clock, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ProgressCharts from '../components/ProgressCharts';
 import type { Workout } from '../types/models';
@@ -27,10 +27,9 @@ export default function Dashboard() {
     try {
       const today = new Date().toISOString().split('T')[0];
       const weekStart = new Date();
-      weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+      weekStart.setDate(weekStart.getDate() - weekStart.getDay() + 1); // Monday
       const weekStartStr = weekStart.toISOString().split('T')[0];
 
-      // Fetch ALL workouts for this user to calculate stats
       const qAll = query(collection(db, 'workouts'), where('userId', '==', user!.uid));
       const snapshotAll = await getDocs(qAll);
       const allWorkouts = snapshotAll.docs.map(doc => ({ id: doc.id, ...doc.data() } as Workout));
@@ -38,8 +37,9 @@ export default function Dashboard() {
       const recent = allWorkouts
         .filter(w => w.status === 'completed')
         .sort((a, b) => b.workoutDate.localeCompare(a.workoutDate))
-        .slice(0, 5);
+        .slice(0, 3);
 
+      // Filter planned workouts for the current week starting from today
       const planned = allWorkouts
         .filter(w => w.status === 'planned' && w.workoutDate >= today)
         .sort((a, b) => a.workoutDate.localeCompare(b.workoutDate));
@@ -64,94 +64,129 @@ export default function Dashboard() {
     }
   };
 
-  if (loading) return <div className="flex h-[80vh] items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>;
+  const getDayName = (dateStr: string) => {
+    return new Date(dateStr + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long' });
+  };
+
+  if (loading) return <div className="flex h-[80vh] items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div></div>;
 
   return (
-    <div className="space-y-6">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-500">Olá, {user?.displayName || 'Guerreiro'}</h1>
-        <p className="text-muted-foreground">Aqui está o seu planejamento e progresso.</p>
+    <div className="space-y-8 pb-12">
+      <header className="flex justify-between items-start">
+        <div>
+          <h1 className="text-4xl font-extrabold tracking-tight text-white">Meu Plano</h1>
+          <p className="text-muted-foreground mt-1 text-lg">Semana 1 🔥</p>
+        </div>
+        <div className="bg-orange-500/10 p-3 rounded-2xl text-orange-500 border border-orange-500/20">
+          <TrendingUp size={24} />
+        </div>
       </header>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="glass-card p-6 rounded-2xl border border-primary/10">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-primary/10 rounded-lg text-primary"><Activity size={24} /></div>
-            <div><p className="text-sm text-muted-foreground">Feitos na Semana</p><h3 className="text-2xl font-bold">{stats.workoutsThisWeek}</h3></div>
+      {/* Stats Quick Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {[
+          { label: 'Treinos', value: stats.workoutsThisWeek, icon: Activity, color: 'text-orange-500' },
+          { label: 'Volume', value: `${(stats.totalVolume/1000).toFixed(1)}k`, icon: TrendingUp, color: 'text-blue-400' },
+          { label: 'KM', value: stats.totalDistance.toFixed(1), icon: Calendar, color: 'text-green-400' },
+          { label: 'Meta', value: '80%', icon: CheckCircle2, color: 'text-purple-400' }
+        ].map((item, i) => (
+          <div key={i} className="glass-card p-4 rounded-2xl border border-white/5">
+            <div className={`${item.color} mb-2`}><item.icon size={18} /></div>
+            <p className="text-[10px] uppercase font-black tracking-widest text-muted-foreground">{item.label}</p>
+            <h3 className="text-xl font-bold text-white">{item.value}</h3>
           </div>
-        </div>
-        <div className="glass-card p-6 rounded-2xl border border-blue-500/10">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-blue-500/10 rounded-lg text-blue-500"><TrendingUp size={24} /></div>
-            <div><p className="text-sm text-muted-foreground">Volume Total (kg)</p><h3 className="text-2xl font-bold">{stats.totalVolume.toLocaleString()}</h3></div>
-          </div>
-        </div>
-        <div className="glass-card p-6 rounded-2xl border border-green-500/10">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-green-500/10 rounded-lg text-green-500"><Calendar size={24} /></div>
-            <div><p className="text-sm text-muted-foreground">Distância (km)</p><h3 className="text-2xl font-bold">{stats.totalDistance.toFixed(1)}</h3></div>
-          </div>
-        </div>
+        ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-        {/* Planejados */}
-        <div className="space-y-4">
-          <h2 className="text-xl font-bold flex items-center gap-2"><Clock className="text-secondary-foreground" /> Próximos Treinos</h2>
-          <div className="space-y-3">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Próximos Treinos (Timeline View) */}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold flex items-center gap-2 text-white">Próximos Passos</h2>
+            <Link to="/log" className="text-orange-500 text-sm font-bold flex items-center gap-1 hover:underline">Novo Treino <Plus size={16} /></Link>
+          </div>
+          
+          <div className="timeline-container">
+            <div className="timeline-line"></div>
             {stats.plannedWorkouts.length === 0 ? (
-              <div className="p-6 glass-card rounded-2xl text-center text-muted-foreground italic">Nenhum treino agendado.</div>
+              <div className="p-12 glass-card rounded-3xl text-center border-dashed border-white/10">
+                <p className="text-muted-foreground italic">Nenhum treino agendado para esta semana.</p>
+                <Link to="/log" className="mt-4 inline-block bg-orange-500 text-white px-6 py-2 rounded-full font-bold">Programar Agora</Link>
+              </div>
             ) : (
-              stats.plannedWorkouts.map(w => (
-                <div key={w.id} className="glass-card p-4 rounded-xl border-l-4 border-secondary flex justify-between items-center hover:bg-white/5 transition-colors">
-                  <div>
-                    <h4 className="font-bold text-foreground capitalize">{w.type === 'musculacao' ? `Treino de ${w.muscleGroup}` : 'Corrida Programada'}</h4>
-                    <p className="text-sm text-muted-foreground">{new Date(w.workoutDate + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: '2-digit' })}</p>
-                  </div>
-                  {w.type === 'corrida' && w.cardioSessions?.[0]?.targetDistance && (
-                    <span className="text-xs bg-secondary/20 text-secondary-foreground px-2 py-1 rounded-md font-bold">{w.cardioSessions[0].targetDistance}km</span>
-                  )}
+              stats.plannedWorkouts.map((w, i) => (
+                <div key={w.id} className="relative">
+                  <div className={`timeline-dot ${i === 0 ? 'bg-orange-500 shadow-[0_0_15px_rgba(249,115,22,0.5)]' : 'pending'}`}></div>
+                  <Link to="/log" className="step-card block group">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="text-xs font-bold text-orange-500 uppercase tracking-wider mb-1">{getDayName(w.workoutDate)}</p>
+                        <h4 className="text-xl font-bold text-white group-hover:text-orange-500 transition-colors capitalize">
+                          {w.type === 'musculacao' ? `${w.muscleGroup}` : 'Corrida Programada'}
+                        </h4>
+                        <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground font-medium">
+                          <span className="flex items-center gap-1"><Activity size={14} /> {w.type === 'musculacao' ? 'Hipertrofia' : 'Cardio'}</span>
+                          <span className="flex items-center gap-1"><Clock size={14} /> 45-60 min</span>
+                        </div>
+                      </div>
+                      <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-muted-foreground group-hover:border-orange-500 group-hover:text-orange-500 transition-all">
+                        <ArrowRight size={20} />
+                      </div>
+                    </div>
+                  </Link>
                 </div>
               ))
+            )}
+            
+            {/* Exemplo de etapa concluída para efeito visual se o histórico tiver treinos de hoje */}
+            {stats.recentWorkouts.length > 0 && stats.recentWorkouts[0].workoutDate === new Date().toISOString().split('T')[0] && (
+              <div className="relative">
+                <div className="timeline-dot completed flex items-center justify-center text-white"><Check size={12} /></div>
+                <div className="step-card opacity-60">
+                   <p className="text-xs font-bold text-green-500 uppercase mb-1">Hoje</p>
+                   <h4 className="text-lg font-bold text-white">Treino Finalizado ✅</h4>
+                </div>
+              </div>
             )}
           </div>
         </div>
 
-        {/* Recentes */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold flex items-center gap-2"><CheckCircle2 className="text-primary" /> Atividades Recentes</h2>
-            <Link to="/history" className="text-sm text-primary hover:underline flex items-center gap-1">Histórico <ArrowRight size={16} /></Link>
+        {/* Sidebar: Stats Secundários (estilo Detalhes do Treino) */}
+        <div className="space-y-6">
+          <h2 className="text-xl font-bold text-white">Performance</h2>
+          <div className="space-y-4">
+             {[
+               { label: 'Tempo de treino', value: '4:22:15', sub: 'Total na semana', icon: Clock },
+               { label: 'Calorias', value: '2.450', sub: 'Estimação kcal', icon: Activity },
+               { label: 'Exercícios', value: stats.totalVolume > 0 ? '24' : '0', sub: 'Diferentes tipos', icon: Dumbbell }
+             ].map((stat, i) => (
+               <div key={i} className="glass-card p-5 rounded-3xl relative overflow-hidden group">
+                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                   <stat.icon size={48} />
+                 </div>
+                 <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
+                 <h3 className="text-2xl font-black text-white mt-1">{stat.value}</h3>
+                 <div className="mt-4 h-[2px] w-full bg-white/5 overflow-hidden">
+                    <div className="h-full bg-orange-500 w-2/3"></div>
+                 </div>
+               </div>
+             ))}
           </div>
-          <div className="space-y-3">
-            {stats.recentWorkouts.length === 0 ? (
-              <div className="p-6 glass-card rounded-2xl text-center text-muted-foreground italic">Nenhum treino realizado ainda.</div>
-            ) : (
-              stats.recentWorkouts.map(w => (
-                <div key={w.id} className="glass-card p-4 rounded-xl border-l-4 border-primary flex justify-between items-center hover:bg-white/5 transition-colors">
-                  <div>
-                    <h4 className="font-bold text-foreground capitalize">{w.type === 'musculacao' ? `Treino de ${w.muscleGroup}` : 'Corrida Realizada'}</h4>
-                    <p className="text-sm text-muted-foreground">{new Date(w.workoutDate + 'T12:00:00').toLocaleDateString('pt-BR')}</p>
-                  </div>
-                  <div className="text-right">
-                    {w.type === 'musculacao' ? (
-                      <p className="text-sm font-medium">{w.exercises?.length} exers.</p>
-                    ) : (
-                      <p className="text-sm font-medium">{w.cardioSessions?.[0]?.distance} km</p>
-                    )}
-                  </div>
-                </div>
-              ))
-            )}
+          
+          <div className="glass-card p-6 rounded-3xl bg-gradient-to-br from-orange-500/20 to-transparent border-orange-500/10">
+            <h4 className="font-bold text-white mb-2">Transformação</h4>
+            <p className="text-xs text-muted-foreground mb-4">Você está a 3kg da sua meta mensal!</p>
+            <div className="flex items-end gap-1 h-12">
+               {[4,7,5,8,6,9,7].map((h, i) => <div key={i} className="flex-1 bg-orange-500/40 rounded-t-sm" style={{ height: `${h*10}%` }}></div>)}
+            </div>
           </div>
         </div>
       </div>
 
       <ProgressCharts />
 
-      <Link to="/log" className="fixed bottom-[84px] right-4 md:bottom-8 md:right-8 w-14 h-14 bg-primary text-primary-foreground rounded-full flex items-center justify-center shadow-lg shadow-primary/30 hover:scale-105 active:scale-95 transition-all z-40">
-        <Plus size={24} />
+      <Link to="/log" className="fixed bottom-[84px] right-4 md:bottom-8 md:right-8 w-16 h-16 bg-orange-500 text-white rounded-2xl flex items-center justify-center shadow-2xl shadow-orange-500/40 hover:scale-105 active:scale-95 transition-all z-40 rotate-45 group">
+        <Plus size={32} className="-rotate-45" />
       </Link>
     </div>
   );

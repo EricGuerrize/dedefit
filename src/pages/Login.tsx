@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 import { Dumbbell } from 'lucide-react';
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -18,7 +19,8 @@ export default function Login() {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
       } else {
-        await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(userCredential.user, { displayName: name });
         setError('Conta criada! Fazendo login...');
       }
     } catch (err: any) {
@@ -57,6 +59,14 @@ export default function Login() {
               </div>
             )}
             <div className="space-y-4">
+              {!isLogin && (
+                <div className="animate-in slide-in-from-top-2 duration-300">
+                  <label className="text-sm font-medium text-foreground mb-1 block">Nome Completo</label>
+                  <input type="text" required value={name} onChange={(e) => setName(e.target.value)}
+                    className="w-full px-4 py-3 bg-background/50 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-foreground placeholder:text-muted-foreground/50"
+                    placeholder="Como podemos te chamar?" />
+                </div>
+              )}
               <div>
                 <label className="text-sm font-medium text-foreground mb-1 block">Email</label>
                 <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
